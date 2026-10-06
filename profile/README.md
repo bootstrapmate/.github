@@ -1,7 +1,5 @@
 <div align="left">
 
-<img src="https://github.com/bootstrapmate/bootstrapmate-macintosh/blob/main/resources/BootstrapMate.png?raw=true" alt="BootstrapMate" width="120">
-
 # BootstrapMate
 
 ## From unboxed to ready, on its own.
