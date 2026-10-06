@@ -84,6 +84,27 @@ userland: []
 
 Both install the command-line tool `managedbootstrapinstall` beside a **Managed Bootstrap Install** app for settings, runs and logs.
 
+## Getting started
+
+1. **Write a manifest.** List a preflight script, the root-stage packages and scripts, and the user-stage items, each with its URL and SHA-256.
+2. **Host it.** Put the manifest and its payloads on any HTTPS server, CDN or blob store. A private one works too, since BootstrapMate sends an `Authorization` header you configure.
+3. **Point machines at it.** Set the manifest URL in a configuration profile on the Mac, or in Intune or Group Policy on Windows.
+4. **Sign the release.** Sign the `.pkg` with your Developer ID Installer certificate (MDMs install only signed packages), or the MSI with your code-signing certificate.
+5. **Deliver it first.** Make BootstrapMate the package your MDM installs during enrollment, before anything else.
+6. **Rehearse.** Run `managedbootstrapinstall --dry-run` against a test machine, then enroll one for real.
+
+### Delivering it first
+
+Speed in the first minutes comes from what lands first. On the Mac, deliver BootstrapMate as the enrollment package your MDM pushes during Automated Device Enrollment, so it starts while Setup Assistant is still on screen instead of waiting behind the MDM's own agent and policies. On Windows, deploy the MSI as a Win32 app the Enrollment Status Page waits for, and detect it with `LastRunVersion` so Intune knows the run finished.
+
+### Tips for a fast first boot
+
+- **Keep the root stage lean.** Put only what must exist before anyone signs in into `setupassistant`; everything else can wait for `userland`.
+- **Install your management tool early.** Once Munki or Cimian is on the machine, it can take over the long tail of software.
+- **Don't block on slow scripts.** Mark a long-running script `donotwait` and the run moves on while it works.
+- **One manifest for every architecture.** Use `skipIf` on the Mac and conditional items on Windows instead of separate manifests.
+- **Pin your signer.** Set the expected Team ID or publisher, so a swapped payload never runs, even if its hash was updated too.
+
 ## Safe to run again
 
 BootstrapMate is designed to be run on a schedule against machines that are already in use:
